@@ -1,0 +1,70 @@
+.popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    max-width: 300px;
+    transition: opacity 0.3s ease;
+    opacity: 0.08;
+}
+
+.popup:hover {
+    .popup-close{
+        opacity: 0.8;
+    }
+    opacity: 0.8;
+}
+
+.popup-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.popup ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.popup li {
+    margin: 5px 0;
+}
+
+.correct-answer {
+    color: lightblue;
+    font-weight: bold;
+}
+
+.popup img {
+    margin-top: 10px;
+    border-radius: 5px;
+    max-width: 100%;
+    height: auto;
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;; 
+    color: white; 
+    border: none; 
+    font-size: 20px; 
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;	
+    background-color: black;
+    opacity: 0.08;
+}
+
+.popup-close:hover {
+    background: darkred;
+}
