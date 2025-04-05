@@ -9,6 +9,10 @@ def find_response_element(question) -> tuple:
         while next_element and next_element.name != "ul":
             next_element = next_element.find_next()
         return "ul", next_element
+    elif "Open the PT Activity" in question.get_text(strip=True):
+        while next_element and next_element.name != "ul":
+            next_element = next_element.find_next()
+        return "ul", next_element
     else:
         while next_element:
             if next_element.name == "ul":
@@ -77,24 +81,16 @@ def extract_data_from_html(html_content) -> list:
                 questions_data[-1]["question"] += " " + question_text
                 continue
 
-        options = []
-        correct_answers = []
         image_url = None
         
         response_type, response_element = find_response_element(question)
         
         if response_type == "ul":
-            for li in response_element.find_all("li"):
-                option_text = li.get_text(strip=True)
-                options.append(option_text)
-                if li.find("span", style=lambda value: value and "color: #ff0000" in value):
-                    correct_answers.append(option_text)
-                if li.get("class") and "correct_answer" in li["class"]:
-                    correct_answers.append(option_text)
+            options = get_question_options(response_type, response_element)
+            correct_answers = get_correct_answers(response_element)
 
         elif response_type == "img":
-            if response_element and response_element.get("src"):
-                image_url = response_element["src"]
+            image_url = get_question_options(response_type, response_element)[0]
 
         questions_data.append({
             "question": question_text,
@@ -104,6 +100,32 @@ def extract_data_from_html(html_content) -> list:
         })
 
     return questions_data
+
+def get_correct_answers(response_element) -> list:
+    '''Función para obtener las respuestas correctas de las preguntas extraídas'''
+
+    answers = []
+    for li in response_element.find_all("li"):
+        if li.find("span", style=lambda value: value and "color: #ff0000" or "color: red" in value):
+            answers.append(li.get_text(strip=True))
+        if li.get("class") and "correct_answer" in li["class"]: 
+            answers.append(li.get_text(strip=True))
+    return answers
+
+def get_question_options(response_type, response_element) -> list:
+    '''Función para obtener las opciones de respuesta de las preguntas extraídas'''
+    
+    options = []
+    if response_type == "ul":
+        for li in response_element.find_all("li"):
+            option_text = li.get_text(strip=True)
+            options.append(option_text)
+    elif response_type == "img":
+        if response_element and response_element.get("src"):
+            image_url = response_element["src"]
+            options.append(image_url)
+    
+    return options
 
 def process_html_files_in_folder(folder_path) -> list:
     '''Función para procesar todos los archivos html en un directorio'''
