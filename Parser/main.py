@@ -13,6 +13,10 @@ def find_response_element(question) -> tuple:
         while next_element and next_element.name != "ul":
             next_element = next_element.find_next()
         return "ul", next_element
+    elif "Match the" in question.get_text(strip=True):
+        while next_element and next_element.name != "img":
+            next_element = next_element.find_next()
+        return "img", next_element
     else:
         while next_element:
             if next_element.name == "ul":
@@ -82,6 +86,8 @@ def extract_data_from_html(html_content) -> list:
                 continue
 
         image_url = None
+        options = []
+        correct_answers = []
         
         response_type, response_element = find_response_element(question)
         
